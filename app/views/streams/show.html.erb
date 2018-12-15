@@ -1,0 +1,98 @@
+ <script src="https://static.opentok.com/v2/js/opentok.min.js" type="text/javascript"></script>
+  <script type="text/javascript">
+    var apiKey =  "46236752";
+    var sessionId = "<%= @stream.session_id %>";
+    var token = "<%= @tok_token %>";
+    var session;
+      TB.setLogLevel(TB.DEBUG);
+        var session = TB.initSession(sessionId);
+          var a = <%= current_user.id %>;
+          var b = <%= @stream.user_id %>;
+          if ( a == b) {
+            session.addEventListener('sessionConnected', sessionConnectedHandler);
+          } else {
+            greeting = "Good evening";
+          }
+          
+          session.addEventListener('streamCreated', streamCreatedHandler);
+          session.connect(apiKey, token);
+      var publisher;
+      function sessionConnectedHandler(event) {
+        publisher = TB.initPublisher(apiKey, 'videobox',{width:1100, height:670});
+        session.publish(publisher);
+        
+        subscribeToStreams(event.streams);
+      }
+      function streamCreatedHandler(event) {
+       
+        subscribeToStreams(event.streams);
+      }
+      function subscribeToStreams(streams) {
+        for (var i = 0; i < streams.length; i++) {
+          if (streams[i].connection.connectionId == session.connection.connectionId) {
+            return;
+          }
+          var div = document.createElement('div');
+          div.setAttribute('id', 'stream' + streams[i].streamId);
+          document.body.appendChild(div);
+          var options = {width: 1100, height: 670};
+          session.subscribe(streams[i], 'containerElementId' , options);
+        }
+      }
+  </script>
+<% if current_user.id == @stream.user_id %>
+  <div class="card mt-3 post">
+    <div class="card-header d-flex align-items-center">
+      <%= link_to user_path(@stream.user), class: "no-text-decoration" do %>
+        <%= image_tag avatar_url(@stream.user), class: "post-author-icon" %>
+      <% end %>
+      <%= link_to user_path(@stream.user), class: "normal-color no-text-decoration",
+        title: @stream.user.name do %>
+        <strong><%= @stream.user.name %></strong>
+        <span class="light-color post-time"><%= time_ago_in_words(@stream.created_at)%> ago</span>
+        <br>
+        <%= @stream.title %>
+      <% end %>
+      <% if current_user.id == @stream.user_id %>
+        <%= link_to stream_path(@stream), method: :delete, 
+          class: "ml-auto delete-post-icon mx-0 my-auto", data: {confirm: "Are you sure???"} do %>
+          <i class="far fa-trash-alt" aria-hidden="true"></i>
+        <% end %>
+      <% end %>
+    </div>
+    
+    <div id="videobox" style="width: 900px; height: 670px;">
+  </div>
+<% else %>
+  <div class="card mt-3 post">
+  <div class="card-header d-flex align-items-center">
+    <%= link_to user_path(@stream.user), class: "no-text-decoration" do %>
+      <%= image_tag avatar_url(@stream.user), class: "post-author-icon" %>
+    <% end %>
+    <%= link_to user_path(@stream.user), class: "normal-color no-text-decoration",
+      title: @stream.user.name do %>
+      <strong><%= @stream.user.name %></strong>
+      <span class="light-color post-time"><%= time_ago_in_words(@stream.created_at)%> ago</span>
+      <br>
+      <%= @stream.title %>
+    <% end %>
+    <% if current_user.id == @stream.user_id %>
+      <%= link_to streams_path(@stream), method: :delete, 
+        class: "ml-auto delete-post-icon mx-0 my-auto", data: {confirm: "Are you sure???"} do %>
+        <i class="far fa-trash-alt" aria-hidden="true"></i>
+      <% end %>
+    <% end %>
+  </div>
+<% end %>
+
+<style type="text/css" media="screen">
+
+  div.OT_subscriber{
+    font-family: helvetica, arial, sans-serif;
+    border: 1px solid rgba(87, 193, 228, .85);
+    border-radius: 6px;
+    margin-top: 15px;
+    margin-left: 380px;
+  }
+
+</style>

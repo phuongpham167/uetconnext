@@ -1,0 +1,28 @@
+<div class="card mt-3 post">
+  <div class="card-header d-flex align-items-center">
+    <%= link_to user_path(post.user), class: "no-text-decoration" do %>
+      <%= image_tag avatar_url(post.user), class: "post-author-icon" %>
+    <% end %>
+    <%= link_to user_path(post.user), class: "normal-color no-text-decoration",
+      title: post.user.name do %>
+      <strong><%= post.user.name %></strong>
+      <span class="light-color post-time"><%= time_ago_in_words(post.created_at)%> ago</span>
+      <br>
+      <%= post.content %>
+    <% end %>
+    <% if post.is_belongs_to? current_user %>
+      <%= link_to post_path(post), method: :delete, 
+        class: "ml-auto delete-post-icon mx-0 my-auto", data: {confirm: "Are you sure???"} do %>
+        <i class="far fa-trash-alt" aria-hidden="true"></i>
+      <% end %>
+    <% end %>
+  </div>
+  <%= render "photos", post: post %>
+  <div class="card-body">
+    <div class="row actions">
+      <div id="like-icon-post-<%= post.id.to_s%>">
+        <%= render "like_icon", {is_liked: post.is_liked(current_user), post: post} %>
+      </div>
+    </div>
+  </div>
+</div>

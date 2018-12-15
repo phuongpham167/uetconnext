@@ -1,0 +1,98 @@
+<div class="d-flex flex-column align-items-center mt-3">
+  
+  <div class="row">
+    <div class="col-xl-6">
+      <button type="button" class="btn btn-info" data-toggle="modal" data-target="#exampleModal1">Create LiveStream</button>
+    </div>
+    <div class="col-xl-6">
+      <button type="button" class="btn btn-info" data-toggle="modal" data-target="#exampleModal">Create Post</button>
+    </div>
+    </div>
+  <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <%= form_for @post, :html => {:multipart => true, :class => "dropzone upload-images p-0 border-0"} do |f| %>
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Create Post</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 post-card">
+              <div class="form-group row mt-2">
+                <div class="col-auto pr-0">
+                  <%= image_tag avatar_url(current_user), class: "post-author-icon" %>
+                </div>
+                <div class="col pl-0">
+                  <%= f.text_field :content, class: "form-control border-0",
+                    placeholder: "Say something about this ..." %>
+                </div>
+              </div>
+              <div class="fallback">
+                <%= file_field_tag "images[]", type: :file, multiple: true %>
+              </div>
+              <div class="dz-message m-0"></div>
+              <div class="dropzone-previews mb-3">
+                <div class="upload-photos-icon">
+                  <i class="fa fa-plus fa-2x" aria-hidden="true" style="color:#dddfe2"></i>
+                </div>
+              </div>
+              
+            </div>
+          </div>
+          <div class="modal-footer">
+            <div class="btn-group btn-group-lg" role="group">
+              <button type="button" class="btn btn-outline-dark" data-dismiss="modal">Close</button>
+              <%= f.submit "Post", class: "btn btn-outline-dark" %>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+  <div class="modal fade" id="exampleModal1" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <%= form_for Stream.new do |f| %>
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Start Livestream</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 post-card">
+              <div class="form-group row mt-2">
+                <div class="col-auto pr-0">
+                  <%= image_tag avatar_url(current_user), class: "post-author-icon" %>
+                </div>
+                <div class="col pl-0">
+                  <%= f.text_field :title, class: "form-control border-0",
+                    placeholder: "Say something about this ..." %>
+                </div>
+              </div>
+              <div class="dz-message m-0"></div>
+              <div class="dropzone-previews mb-3">
+                
+              </div>
+              
+            </div>
+          </div>
+          <div class="modal-footer">
+            <div class="btn-group btn-group-lg" role="group">
+              <button type="button" class="btn btn-outline-dark" data-dismiss="modal">Close</button>
+              <%= f.submit "Start", class: "btn btn-outline-dark" %>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+  <br>
+  <div id="posts">
+    <%= render partial: "post", collection: @posts, as: :post %>
+  </div>
+</div>
+
+<%= render "shared/footer" %>

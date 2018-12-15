@@ -1,0 +1,77 @@
+<div style="min-height:700px">
+<div class="d-flex flex-column align-items-center mt-3">
+  <div class="row">
+    <div class="col-xl-6">
+      <button type="button" class="btn btn-info" data-toggle="modal" data-target="#exampleModal">Create Room</button>
+    </div>
+    </div>
+  <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <%= form_for (@room) do |f| %>
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Create Room</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 post-card">
+              <div class="form-group row mt-2">
+                <div class="col-auto pr-0">
+                  <%= image_tag avatar_url(current_user), class: "post-author-icon" %>
+                </div>
+                <div class="col pl-0">
+                  <%= f.text_field :title, class: "form-control border-0",
+                    placeholder: "Say something about this ..." %>
+                </div>
+                
+              </div>
+            </div>
+            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 post-card" style="padding-left:75px">
+              Public? <%= f.check_box :public %><br/>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <div class="btn-group btn-group-lg" role="group">
+              <button type="button" class="btn btn-outline-dark" data-dismiss="modal">Close</button>
+              <%= f.submit "Create", class: "btn btn-outline-dark" %>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+  
+  <br>
+  
+</div>
+<h3 style="">All group created recently in public</h3>
+<% @rooms.each do |room| %>
+  <div class="card mt-3 post">
+    <div class="card-header d-flex align-items-center">
+      <%= link_to user_path(room.user), class: "no-text-decoration" do %>
+      <%= image_tag avatar_url(room.user), class: "post-author-icon" %>
+      <% end %>
+      <%= link_to user_path(room.user), class: "normal-color no-text-decoration",
+        title: room.user.name do %>
+        <strong><%= room.user.name %></strong>
+        <span class="light-color post-time"><%= time_ago_in_words(room.created_at)%> ago</span>
+        <br>
+        <%= room.title %>
+      <% end %>
+      <% if current_user.id == room.user.id %>
+        <%= link_to room_path(room), method: :delete, 
+          class: "ml-auto delete-post-icon mx-0 my-auto", data: {confirm: "Are you sure???"} do %>
+          <i class="far fa-trash-alt" aria-hidden="true"></i>
+        <% end %>
+      <% end %>
+      
+    </div>
+    <div class="row" style="padding: 10px 80px">
+      <a href="/party/<%= room.id %>">Join</a>
+    </div>
+  </div>
+<% end %>
+</div>
+<%= render "shared/footer" %>

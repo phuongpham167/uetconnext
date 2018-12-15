@@ -1,0 +1,1 @@
+Post.create(user_id: 1, content: "today i miss you")

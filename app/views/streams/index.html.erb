@@ -1,0 +1,32 @@
+<div style="min-height:700px">
+<h3 style="">All Stream Now</h3>
+<% @streams.each do |stream| %>
+  <div class="card mt-3 post">
+    <div class="card-header d-flex align-items-center">
+      <%= link_to user_path(stream.user), class: "no-text-decoration" do %>
+      <%= image_tag avatar_url(stream.user), class: "post-author-icon" %>
+      <% end %>
+      <%= link_to user_path(stream.user), class: "normal-color no-text-decoration",
+        title: stream.user.name do %>
+        <strong><%= stream.user.name %></strong>
+        <span class="light-color post-time"><%= time_ago_in_words(stream.created_at)%> ago</span>
+        <br>
+        <%= link_to stream.title, stream_path(stream)%>
+      <% end %>
+      <% if current_user.id == stream.user.id %>
+        <%= link_to stream_path(stream), method: :delete, 
+          class: "ml-auto delete-post-icon mx-0 my-auto", data: {confirm: "Are you sure???"} do %>
+          <i class="far fa-trash-alt" aria-hidden="true"></i>
+        <% end %>
+      <% end %>
+      
+    </div>
+    <% if current_user.id =! stream.user.id %>
+      <div class="row" style="padding: 10px 80px">
+        <%= link_to "Watch", stream_path(stream)%>
+      </div>
+    <% end %>
+  </div>
+<% end %>
+</div>
+<%= render "shared/footer" %>
